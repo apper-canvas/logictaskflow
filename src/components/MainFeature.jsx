@@ -281,6 +281,8 @@ function MainFeature({ board }) {
                     transition={{ duration: 0.2 }}
                     className={`mb-2 p-3 bg-white dark:bg-surface-800 rounded-lg shadow-sm border-l-4 transition-all ${
                       draggedCard?.card?.id === card.id ? 'opacity-40' : 'opacity-100'
+                    } cursor-pointer
+                    hover:shadow-md
                     }`}
                     style={{ borderLeftColor: card.labels?.[0] ? labelOptions.find(l => l.id === card.labels[0])?.color : 'transparent' }}
                     draggable
@@ -288,6 +290,7 @@ function MainFeature({ board }) {
                   >
                     <div className="flex justify-between mb-2">
                       <h4 className="font-medium">{card.title}</h4>
+                      <div onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
                         <button 
                           onClick={() => setEditingCard({...card})}
@@ -301,6 +304,7 @@ function MainFeature({ board }) {
                         >
                           <Trash2 size={14} />
                         </button>
+                      </div>
                       </div>
                     </div>
                     
@@ -335,6 +339,7 @@ function MainFeature({ board }) {
                         {new Date(card.dueDate).toLocaleDateString()}
                       </div>
                     )}
+                    <div className="absolute inset-0 cursor-pointer" onClick={() => setEditingCard({...card})}></div>
                   </motion.div>
                 ))}
                 
