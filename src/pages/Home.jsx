@@ -46,7 +46,7 @@ function Home({ darkMode, toggleDarkMode }) {
     setShowNewBoardForm(false);
   };
   
-  const [selectedBoard, setSelectedBoard] = useState(null);
+  const [selectedBoard, setSelectedBoard] = useState(boards[0]);
   
   return (
     <motion.div 
