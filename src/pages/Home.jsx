@@ -62,8 +62,8 @@ function Home({ darkMode, toggleDarkMode }) {
             <div className="flex items-center space-x-2">
               <span className="text-primary dark:text-primary-light">
                 <Kanban size={28} />
+              </span>
               <h1 className="text-xl font-bold tracking-tight">Trelllllooooooo</h1>
-              <h1 className="text-xl font-bold tracking-tight">TaskFlow</h1>
             </div>
             
             <div className="flex items-center gap-4">
