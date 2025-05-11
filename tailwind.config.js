@@ -29,7 +29,7 @@ export default {
           700: '#334155',  // Added
           800: '#1e293b',  // Added
           900: '#0f172a'   // Darkest
-        }      
+        }
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui'],
@@ -44,12 +44,7 @@ export default {
       borderRadius: {
         'xl': '0.75rem',
         '2xl': '1rem'
-      }
-    }  
-  },
-  theme: {
-    extend: {
-      // ... existing theme extension
+      },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(to right, #3b82f6, #2563eb)',
         'gradient-primary-vertical': 'linear-gradient(to bottom, #3b82f6, #2563eb)',
@@ -63,7 +58,7 @@ export default {
         'gradient-blue-purple': 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
         'gradient-orange-red': 'linear-gradient(135deg, #f97316, #ef4444)'
       }
-    }
+    }  
   },
   plugins: [],
   darkMode: 'class',
