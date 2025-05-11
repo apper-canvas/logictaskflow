@@ -47,6 +47,24 @@ export default {
       }
     }  
   },
+  theme: {
+    extend: {
+      // ... existing theme extension
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(to right, #3b82f6, #2563eb)',
+        'gradient-primary-vertical': 'linear-gradient(to bottom, #3b82f6, #2563eb)',
+        'gradient-secondary': 'linear-gradient(to right, #8b5cf6, #7c3aed)',
+        'gradient-secondary-vertical': 'linear-gradient(to bottom, #8b5cf6, #7c3aed)',
+        'gradient-accent': 'linear-gradient(to right, #f97316, #ea580c)',
+        'gradient-light': 'linear-gradient(to right, #f8fafc, #e2e8f0)',
+        'gradient-light-vertical': 'linear-gradient(to bottom, #f8fafc, #e2e8f0)',
+        'gradient-dark': 'linear-gradient(to right, #1e293b, #0f172a)',
+        'gradient-dark-vertical': 'linear-gradient(to bottom, #1e293b, #0f172a)',
+        'gradient-blue-purple': 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+        'gradient-orange-red': 'linear-gradient(135deg, #f97316, #ef4444)'
+      }
+    }
+  },
   plugins: [],
   darkMode: 'class',
 }
