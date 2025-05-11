@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { toast } from 'react-toastify';
 import getIcon from '../utils/iconUtils';
 
@@ -186,49 +187,27 @@ function MainFeature({ board }) {
     }
   };
   
-  // Handle card drag and drop
-  const [draggedCard, setDraggedCard] = useState(null);
-  
-  const handleDragStart = (e, listId, card) => {
-    setDraggedCard({ listId, card });
-    e.dataTransfer.effectAllowed = "move";
-    // Make the ghost drag image mostly transparent
-    e.dataTransfer.setDragImage(e.target, 20, 20);
-  };
-  
-  const handleDragOver = (e, listId) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-  
-  const handleDrop = (e, targetListId) => {
-    e.preventDefault();
-    
-    if (!draggedCard) return;
-    
-    const { listId: sourceListId, card } = draggedCard;
-    
-    // Don't do anything if dropping on the same list
-    if (sourceListId === targetListId) return;
-    
-    // Remove card from source list
-    const updatedLists = lists.map(list => {
-      if (list.id === sourceListId) {
-        return {
-          ...list,
-          cards: list.cards.filter(c => c.id !== card.id)
-        };
-      }
-      return list;
-    });
-    
-    // Add card to target list
-    const finalLists = updatedLists.map(list => {
-      if (list.id === targetListId) {
-        return {
-          ...list,
-          cards: [...list.cards, card]
-        };
+  // Handle card drag and drop with react-beautiful-dnd
+  const onDragEnd = (result) => {
+    const { destination, source, draggableId } = result;
+
+    // If there's no destination or the card was dropped back to its original position
+    if (!destination || (destination.droppableId === source.droppableId)) {
+      return;
+    }
+
+    // Find the source list and card
+    const sourceList = lists.find(list => list.id.toString() === source.droppableId);
+    const card = sourceList.cards.find(card => card.id.toString() === draggableId);
+
+    // Create new lists array with the card moved
+    const newLists = lists.map(list => {
+      // Remove from source list
+      if (list.id.toString() === source.droppableId) {
+        return { ...list, cards: list.cards.filter(c => c.id.toString() !== draggableId) };
+      // Add to destination list
+      } else if (list.id.toString() === destination.droppableId) {
+        return { ...list, cards: [...list.cards, card] };
       }
       return list;
     });
@@ -242,12 +221,12 @@ function MainFeature({ board }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+    
+    setLists(newLists);
+    toast.success("Card moved successfully");
       transition={{ duration: 0.3 }}
       className="h-full"
     >
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <span 
             className="w-4 h-4 rounded-full mr-3"
             style={{ backgroundColor: board.color }}
           ></span>
@@ -256,11 +235,12 @@ function MainFeature({ board }) {
       </div>
       
       <div className="overflow-x-auto pb-4">
-        <div className="flex gap-4 min-w-max">
+          ></span>
           {/* Lists */}
           {lists.map(list => (
             <div 
               key={list.id}
+    <DragDropContext onDragEnd={onDragEnd}>
               className="w-80 flex-shrink-0 bg-surface-100 dark:bg-surface-800 rounded-xl shadow-sm overflow-hidden"
               onDragOver={(e) => handleDragOver(e, list.id)}
               onDrop={(e) => handleDrop(e, list.id)}
@@ -270,35 +250,44 @@ function MainFeature({ board }) {
                 <h3 className="font-semibold">{list.title}</h3>
               </div>
               
-              {/* List Cards */}
-              <div className="p-2 min-h-[200px] max-h-[70vh] overflow-y-auto scrollbar-hide">
                 {list.cards.map(card => (
                   <motion.div
                     key={card.id}
                     layout
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    className={`mb-2 p-3 bg-white dark:bg-surface-800 rounded-lg shadow-sm border-l-4 transition-all ${
-                      draggedCard?.card?.id === card.id ? 'opacity-40' : 'opacity-100'
-                    } cursor-pointer
-                    hover:shadow-md
-                    }`}
-                    style={{ borderLeftColor: card.labels?.[0] ? labelOptions.find(l => l.id === card.labels[0])?.color : 'transparent' }}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, list.id, card)}
+              <Droppable droppableId={list.id.toString()}>
+                {(provided) => (
+                  <div 
+                    className="p-2 min-h-[200px] max-h-[70vh] overflow-y-auto scrollbar-hide"
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
                   >
-                    <div className="flex justify-between mb-2">
-                      <h4 className="font-medium">{card.title}</h4>
-                      <div onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center gap-1">
-                        <button 
-                          onClick={() => setEditingCard({...card})}
-                          className="p-1 text-surface-500 hover:text-primary dark:text-surface-400 dark:hover:text-primary-light rounded"
-                        >
+                    {list.cards.map((card, index) => (
+                      <Draggable 
+                        key={card.id.toString()} 
+                        draggableId={card.id.toString()} 
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <motion.div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            layout
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                            className={`mb-2 p-3 bg-white dark:bg-surface-800 rounded-lg shadow-sm border-l-4 transition-all ${
+                              snapshot.isDragging ? 'opacity-40' : 'opacity-100'
+                            } cursor-pointer hover:shadow-md`}
+                            style={{ 
+                              borderLeftColor: card.labels?.[0] ? labelOptions.find(l => l.id === card.labels[0])?.color : 'transparent',
+                              ...provided.draggableProps.style
+                            }}
+                          >
                           <Edit size={14} />
                         </button>
-                        <button 
                           onClick={() => handleDeleteCard(list.id, card.id)}
                           className="p-1 text-surface-500 hover:text-red-500 dark:text-surface-400 dark:hover:text-red-400 rounded"
                         >
@@ -313,9 +302,7 @@ function MainFeature({ board }) {
                         {card.description}
                       </p>
                     )}
-                    
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {card.labels?.map(labelId => {
                         const label = labelOptions.find(l => l.id === labelId);
                         return label ? (
                           <span 
@@ -341,12 +328,16 @@ function MainFeature({ board }) {
                     )}
                     <div className="absolute inset-0 cursor-pointer" onClick={() => setEditingCard({...card})}></div>
                   </motion.div>
-                ))}
-                
-                {/* New Card Form */}
+                          </motion.div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+
                 <AnimatePresence>
                   {showNewCardForm === list.id && (
                     <motion.form
+
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -448,6 +439,8 @@ function MainFeature({ board }) {
                   </button>
                 )}
               </div>
+                )}
+              </Droppable>
             </div>
           ))}
           
@@ -493,6 +486,7 @@ function MainFeature({ board }) {
           </div>
         </div>
       </div>
+    </DragDropContext>
       
       {/* Edit Card Modal */}
       <AnimatePresence>
