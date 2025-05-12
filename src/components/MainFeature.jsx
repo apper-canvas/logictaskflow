@@ -269,6 +269,7 @@ function MainFeature({ board }) {
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.2 }}
+                            onClick={() => setEditingCard({...card})}
                             className={`mb-2 p-3 bg-white dark:bg-surface-800 rounded-lg shadow-sm border-l-4 transition-all ${
                               snapshot.isDragging ? 'opacity-40' : 'opacity-100'
                             } cursor-pointer hover:shadow-md`}
@@ -327,8 +328,6 @@ function MainFeature({ board }) {
                       </div>
                     )}
                     
-                    <div className="absolute inset-0 cursor-pointer" onClick={() => setEditingCard({...card})}></div>
-                    </div>
                           </motion.div>
                         )}
                       </Draggable>
