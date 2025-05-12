@@ -247,8 +247,9 @@ function MainFeature({ board }) {
               {/* List Header */}
               <div className="p-3 bg-surface-200 dark:bg-surface-700 border-b border-surface-300 dark:border-surface-600">
                 <h3 className="font-semibold">{list.title}</h3>
+              </div>
               <Droppable droppableId={list.id.toString()}>
-                {(provided) => (
+                {(provided) => (<>
                   <div 
                     className="p-2 min-h-[200px] max-h-[70vh] overflow-y-auto scrollbar-hide"
                     ref={provided.innerRef}
@@ -333,9 +334,8 @@ function MainFeature({ board }) {
                       </Draggable>
                     ))}
                   </div>
-                    {provided.placeholder}
-
-                <AnimatePresence>
+                  {provided.placeholder}
+                  <AnimatePresence>
                   {showNewCardForm === list.id && (
                     <motion.form
 
@@ -425,7 +425,7 @@ function MainFeature({ board }) {
                       </div>
                     </motion.form>
                   )}
-                </AnimatePresence>
+
                 
                 {/* Add Card Button */}
                 {showNewCardForm !== list.id && (
@@ -439,9 +439,8 @@ function MainFeature({ board }) {
                     </span>
                   </button>
                 )}
-              </div>
-                )}
-              </Droppable>
+                </>)}
+               </Droppable>
             </div>
           ))}
           
