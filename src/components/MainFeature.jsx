@@ -247,8 +247,6 @@ function MainFeature({ board }) {
               {/* List Header */}
               <div className="p-3 bg-surface-200 dark:bg-surface-700 border-b border-surface-300 dark:border-surface-600">
                 <h3 className="font-semibold">{list.title}</h3>
-                    initial={{ scale: 0.95, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
               <Droppable droppableId={list.id.toString()}>
                 {(provided) => (
                   <div 
@@ -296,19 +294,19 @@ function MainFeature({ board }) {
                         </button>
                       </div>
                       </div>
-                    </div>
                     
                     {card.description && (
                       <p className="text-sm text-surface-600 dark:text-surface-300 mb-2 line-clamp-2">
                         {card.description}
                       </p>
                     )}
+                    
                     <div className="flex flex-wrap gap-1 mb-2">
+                      {card.labels && card.labels.map(labelId => {
                         const label = labelOptions.find(l => l.id === labelId);
                         return label ? (
                           <span 
                             key={labelId}
-                      {card.labels && card.labels.map(labelId => {
                             className="inline-flex items-center text-xs px-2 py-0.5 rounded-full"
                             style={{ 
                               backgroundColor: `${label.color}20`, 
@@ -328,12 +326,14 @@ function MainFeature({ board }) {
                         {new Date(card.dueDate).toLocaleDateString()}
                       </div>
                     )}
+                    
                     <div className="absolute inset-0 cursor-pointer" onClick={() => setEditingCard({...card})}></div>
-                  </motion.div>
+                    </div>
                           </motion.div>
                         )}
                       </Draggable>
                     ))}
+                  </div>
                     {provided.placeholder}
 
                 <AnimatePresence>
