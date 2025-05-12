@@ -439,6 +439,7 @@ function MainFeature({ board }) {
                     </span>
                   </button>
                 )}
+                </AnimatePresence>
                 </>)}
                </Droppable>
             </div>
