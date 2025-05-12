@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'; 
+import { useSelector, useDispatch } from 'react-redux';
+import { updateLists } from '../store/index.js';
 import getIcon from '../utils/iconUtils';
-
 function MainFeature({ board }) {
   // Icon declarations
   const Plus = getIcon("Plus");
@@ -14,32 +15,10 @@ function MainFeature({ board }) {
   const X = getIcon("X");
   const Save = getIcon("Save");
   const Clock = getIcon("Clock");
-  
-  // Initial lists with some sample cards
-  const [lists, setLists] = useState([
-    {
-      id: 1,
-      title: "To Do",
-      cards: [
-        { id: 101, title: "Research competitors", description: "Analyze top 5 competitors", labels: ["research"], dueDate: "2023-06-30" },
-        { id: 102, title: "Create wireframes", description: "Design initial mockups", labels: ["design"], dueDate: "2023-07-01" }
-      ]
-    },
-    {
-      id: 2,
-      title: "In Progress",
-      cards: [
-        { id: 201, title: "Develop MVP", description: "Create minimal viable product", labels: ["development"], dueDate: "2023-07-15" }
-      ]
-    },
-    {
-      id: 3,
-      title: "Done",
-      cards: [
-        { id: 301, title: "Project planning", description: "Initial project scope and timeline", labels: ["planning"], dueDate: "2023-06-15" }
-      ]
-    }
-  ]);
+
+  // Get lists from Redux store
+  const listsFromStore = useSelector(state => state.boards.lists[board.id]) || [];
+  const [lists, setLists] = useState(listsFromStore);
   
   // Form states
   const [showNewListForm, setShowNewListForm] = useState(false);
@@ -56,6 +35,9 @@ function MainFeature({ board }) {
   const [editingCard, setEditingCard] = useState(null);
   
   // Available label options with colors
+  // Redux dispatch
+  const dispatch = useDispatch();
+  
   const labelOptions = [
     { id: "design", name: "Design", color: "#8b5cf6" },
     { id: "development", name: "Development", color: "#3b82f6" },
@@ -81,6 +63,7 @@ function MainFeature({ board }) {
     
     setLists([...lists, newList]);
     setNewListTitle("");
+    dispatch(updateLists({ boardId: board.id, lists: [...lists, newList] }));
     setShowNewListForm(false);
     toast.success("New list added");
   };
@@ -109,6 +92,7 @@ function MainFeature({ board }) {
       return list;
     });
     
+    dispatch(updateLists({ boardId: board.id, lists: updatedLists }));
     setLists(updatedLists);
     setNewCardData({
       title: "",
@@ -138,6 +122,7 @@ function MainFeature({ board }) {
           )
         };
       }
+    dispatch(updateLists({ boardId: board.id, lists: updatedLists }));
       return list;
     });
     
@@ -158,6 +143,7 @@ function MainFeature({ board }) {
       return list;
     });
     
+    dispatch(updateLists({ boardId: board.id, lists: updatedLists }));
     setLists(updatedLists);
     toast.success("Card deleted");
   };
@@ -212,6 +198,7 @@ function MainFeature({ board }) {
       return list;
     });
 
+    dispatch(updateLists({ boardId: board.id, lists: newLists }));
     setLists(newLists);
     toast.success("Card moved successfully");
     

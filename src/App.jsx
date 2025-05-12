@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
+import BoardPage from './pages/BoardPage';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+          <Route path="/board/:boardId" element={<BoardPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
