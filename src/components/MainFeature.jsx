@@ -444,6 +444,7 @@ function MainFeature({ board }) {
                </Droppable>
             </div>
           ))}
+          </DragDropContext>
           
           {/* Add New List */}
           <div className="w-80 flex-shrink-0">
@@ -487,7 +488,6 @@ function MainFeature({ board }) {
           </div>
         </div>
       </div>
-    </DragDropContext>
       
       {/* Edit Card Modal */}
       <AnimatePresence>
