@@ -225,6 +225,9 @@ function MainFeature({ board }) {
       transition={{ duration: 0.3 }}
       className="h-full"
     >
+      <div className="mb-4">
+        <div className="flex items-center">
+          <span 
             className="w-4 h-4 rounded-full mr-3"
             style={{ backgroundColor: board.color }}
           ></span>
@@ -233,25 +236,17 @@ function MainFeature({ board }) {
       </div>
       
       <div className="overflow-x-auto pb-4">
-          ></span>
-          {/* Lists */}
-          {lists.map(list => (
-            <div 
-              key={list.id}
-    <DragDropContext onDragEnd={onDragEnd}>
+        <div className="flex gap-4">
+          <DragDropContext onDragEnd={onDragEnd}>
+            {/* Lists */}
+            {lists.map(list => (
+              <div 
+                key={list.id}
               className="w-80 flex-shrink-0 bg-surface-100 dark:bg-surface-800 rounded-xl shadow-sm overflow-hidden"
-              onDragOver={(e) => handleDragOver(e, list.id)}
-              onDrop={(e) => handleDrop(e, list.id)}
             >
               {/* List Header */}
               <div className="p-3 bg-surface-200 dark:bg-surface-700 border-b border-surface-300 dark:border-surface-600">
                 <h3 className="font-semibold">{list.title}</h3>
-              </div>
-              
-                {list.cards.map(card => (
-                  <motion.div
-                    key={card.id}
-                    layout
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
               <Droppable droppableId={list.id.toString()}>
@@ -284,9 +279,17 @@ function MainFeature({ board }) {
                               ...provided.draggableProps.style
                             }}
                           >
+                             <div className="flex justify-between mb-1">
+                               <h4 className="font-medium text-sm">{card.title}</h4>
+                               <div className="flex space-x-1">
+                                 <button
+                                   onClick={(e) => {e.stopPropagation(); setEditingCard({...card})}}
+                                   className="p-1 text-surface-500 hover:text-blue-500 dark:text-surface-400 dark:hover:text-blue-400 rounded"
+                                 >
                           <Edit size={14} />
                         </button>
-                          onClick={() => handleDeleteCard(list.id, card.id)}
+                        <button
+                          onClick={(e) => {e.stopPropagation(); handleDeleteCard(list.id, card.id)}}
                           className="p-1 text-surface-500 hover:text-red-500 dark:text-surface-400 dark:hover:text-red-400 rounded"
                         >
                           <Trash2 size={14} />
@@ -305,6 +308,7 @@ function MainFeature({ board }) {
                         return label ? (
                           <span 
                             key={labelId}
+                      {card.labels && card.labels.map(labelId => {
                             className="inline-flex items-center text-xs px-2 py-0.5 rounded-full"
                             style={{ 
                               backgroundColor: `${label.color}20`, 
